@@ -1,0 +1,145 @@
+_schema-version: "3.2"
+ID: s3_example
+version: 0.0.1
+modules:
+- name: s3_example-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: s3_example-db
+  parameters:
+    buildpack: nodejs_buildpack
+    disk-quota: 1024M
+    memory: 256M
+- name: s3_example-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: s3_example-logging
+  - name: s3_example-db
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    disk-quota: 1024M
+    memory: 512M
+- name: s3_example
+  type: approuter.nodejs
+  path: app
+  requires:
+  - name: srv-api
+    group: destinations
+    properties:
+      name: srv
+      timeout: 60000
+      url: ~{srv-url}
+  - name: s3_example-logging
+  - name: s3_example-destination-service
+    group: destinations
+    properties:
+      forwardAuthToken: false
+      name: ui5
+      url: https://ui5.sap.com
+  parameters:
+    disk-quota: 1024M
+    memory: 256M
+- name: s3_example-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: s3_example-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - s3example.zip
+      name: s3example
+      target-path: resources/
+    - artifacts:
+      - project1.zip
+      name: project1
+      target-path: resources/
+    - artifacts:
+      - project2.zip
+      name: project2
+      target-path: resources/
+- name: s3example
+  type: html5
+  path: app/s3_example
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: project1
+  type: html5
+  path: app/project1
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: project2
+  type: html5
+  path: app/project2
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: s3_example-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+  properties:
+    hdi-service-name: ${service-name}
+- name: s3_example-logging
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: application-logs
+    service-plan: lite
+- name: s3_example-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: s3_example-html5-srv
+    service-plan: app-host
+- name: s3_example-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: false
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: s3_example-destination-service
+    service-plan: lite
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm install --production
+    - npx -p @sap/cds-dk cds build --production

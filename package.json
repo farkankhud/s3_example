@@ -1,0 +1,45 @@
+{
+    "name": "s3_example",
+    "version": "0.0.1",
+    "description": "S3 Example",
+    "dependencies": {
+        "@sap/cds": ">=7",
+        "@sap/cds-odata-v2-adapter-proxy": "^1.9.21",
+        "@sap/hana-client": "^2",
+        "aws-sdk": "^2.1613.0",
+        "cf-nodejs-logging-support": "^6",
+        "debug": "^4.3",
+        "express": "^4",
+        "xlsx": "^0.18.5"
+    },
+    "devDependencies": {
+        "@sap/ux-specification": "^1.120.9",
+        "cds-launchpad-plugin": "^2.1.8",
+        "rimraf": "^3.0.2",
+        "sqlite3": "^5.0.4"
+    },
+    "scripts": {
+        "start": "npx cds run",
+        "undeploy": "cf undeploy s3_example --delete-services --delete-service-keys --delete-service-brokers",
+        "build": "rimraf resources mta_archives && mbt build --mtar archive",
+        "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+    },
+    "cds": {
+        "requires": {
+            "db": {
+                "[production]": {
+                    "kind": "hana"
+                },
+                "[development]": {
+                    "kind": "sql"
+                }
+            }
+        },
+        "hana": {
+            "deploy-format": "hdbtable"
+        }
+    },
+    "sapux": [
+        "app/project1"
+    ]
+}

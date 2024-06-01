@@ -1,0 +1,18 @@
+GET http://localhost:4004/catalog
+###
+
+
+GET http://localhost:3000/s3/read-all-excel
+
+###sss
+GET http://localhost:4004/catalog/$metadata
+###
+GET http://localhost:4004/catalog/Sales
+###
+POST http://localhost:4004/catalog/Sales(1)/CatalogService.boost
+Content-Type: application/json
+
+{}
+###
+GET http://localhost:4004/catalog/topSales(amount=700)
+###

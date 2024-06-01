@@ -1,0 +1,153 @@
+{
+  "_version": "1.58.0",
+  "sap.app": {
+    "crossNavigation": {
+      "inbounds": {
+          "intent1": {
+                  "signature": {
+                  "parameters": {},
+                  "additionalParameters": "allowed"
+              },
+              "semanticObject": "Books",
+              "action": "manage",
+              "title": "S3 Example",
+              "info": "S3 Example",
+              "subTitle": "S3 Example",
+              "icon": "sap-icon://course-book"
+            }
+        }
+    },
+    "id": "project1",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.11.2",
+      "toolsId": "98d2fb5e-1fcc-472b-a885-0a69a79c3df0"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/Students/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.123.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "project1.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "StudentSetList",
+          "target": "StudentSetList"
+        },
+        {
+          "pattern": "StudentSet({key}):?query:",
+          "name": "StudentSetObjectPage",
+          "target": "StudentSetObjectPage"
+        }
+      ],
+      "targets": {
+        "StudentSetList": {
+          "type": "Component",
+          "id": "StudentSetList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/StudentSet",
+              "variantManagement": "Page",
+              "navigation": {
+                "StudentSet": {
+                  "detail": {
+                    "route": "StudentSetObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "StudentSetObjectPage": {
+          "type": "Component",
+          "id": "StudentSetObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/StudentSet"
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}
