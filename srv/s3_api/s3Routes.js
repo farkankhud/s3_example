@@ -4,11 +4,11 @@ const express = require('express');
 const router = express.Router();
 const cds = require('@sap/cds')
 
-AWS.config.update({
-    accessKeyId: 'AKIAYS2NW6RP5KKATAKB',
-    secretAccessKey: 'JEEfB+8cmx5aNKF2sEoQjKpc/6n6MS4rlaPjDs4Y',
-    region: 'eu-north-1' // For example, 'us-east-1'
-  });
+// AWS.config.update({
+//     accessKeyId: 'AKIAYS2NW6RP5KKATAKB',
+//     secretAccessKey: 'JEEfB+8cmx5aNKF2sEoQjKpc/6n6MS4rlaPjDs4Y',
+//     region: 'eu-north-1' // For example, 'us-east-1'
+//   });
 
 
 const s3 = new AWS.S3();
